@@ -1,0 +1,4 @@
+name: "Hugo post"
+description: "A template for a Hugo post with R"
+create_dir: true
+

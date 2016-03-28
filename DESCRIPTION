@@ -1,0 +1,12 @@
+Package: hugormd
+Title: Render R Markdown to Hugo
+Version: 0.1
+Authors@R: person("Andrew", "Goldstone", email = "andrew.goldstone@gmail.com", role = c("aut", "cre"))
+Description: This package supplies a format and templates for rendering R
+    Markdown to markdown suitable for use with hugo.
+Depends:
+    R (>= 3.2.2),
+    rmarkdown
+License: GPL3
+LazyData: true
+RoxygenNote: 5.0.1
