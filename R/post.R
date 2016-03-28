@@ -12,7 +12,9 @@ post <- function (
         includes=NULL, md_extensions=NULL,
         pandoc_args=NULL) {
 
-    args <- c(rmarkdown::includes_to_pandoc_args(includes), pandoc_args)
+    args <- c(rmarkdown::includes_to_pandoc_args(includes),
+              "--no-wrap",
+              pandoc_args)
 
 
     knitr_options <- rmarkdown::knitr_options_html(fig_width, fig_height, 
