@@ -17,13 +17,14 @@ post <- function (
               pandoc_args)
 
 
-    knitr_options <- rmarkdown::knitr_options_html(fig_width, fig_height, 
+    knitr_options <- rmarkdown::knitr_options_html(fig_width, fig_height,
         fig_retina, FALSE, dev)
     if (is.null(knitr_options$knit_hooks)) {
         knitr_options$knit_hooks <- list()
     }
 
     knitr_options$knit_hooks$plot <- plot_hook
+
 
     # custom package hook option: use hugo figure shortcode
     knitr_options$opts_chunk$use_shortcode <- TRUE
@@ -37,7 +38,7 @@ post <- function (
             to="markdown",
             from=rmarkdown:::from_rmarkdown(extensions=md_extensions),
             args=args
-        ), 
+        ),
         clean_supporting=FALSE,
         post_processor=post_process
     )
@@ -50,10 +51,14 @@ post_process <- function (metadata, input_file,
     input_lines <- readLines(input_file, warn=FALSE)
     partitioned <- rmarkdown:::partition_yaml_front_matter(input_lines)
     output_body <- readLines(output_file, warn=FALSE)
-    
+
     # de-sanitize shortcode delimiters
     output_body <- gsub("\\{\\{&lt; ", "{{< ", output_body)
     output_body <- gsub(" &gt;}}", " >}}", output_body)
+
+    # replace ```r with {{< highlight r >}}
+    output_body <- gsub("^``` \\{\\.r\\}", "{{< highlight r >}}", output_body)
+    output_body <- gsub("^```$", "{{< /highlight >}}", output_body)
 
     if (!is.null(partitioned$front_matter)) {
         output_lines <- c(
@@ -67,11 +72,11 @@ post_process <- function (metadata, input_file,
 
 plot_hook <- function (x, options) {
     cap <- options$fig.cap
-    
+
     if (is.null(options$use_shortcode) || !options$use_shortcode) {
         if (is.null(cap)) {
             cap <- ""
-        } 
+        }
         result <- paste0("![", cap, "](", x, ")")
     } else {
         result <- paste0("{{< figure src=\"", x, "\"")
