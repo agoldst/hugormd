@@ -16,21 +16,33 @@ post <- function (
               "--no-wrap",
               pandoc_args)
 
-
     knitr_options <- rmarkdown::knitr_options_html(fig_width, fig_height,
         fig_retina, FALSE, dev)
     if (is.null(knitr_options$knit_hooks)) {
         knitr_options$knit_hooks <- list()
     }
-
+    # set plot hook
     knitr_options$knit_hooks$plot <- plot_hook
-
 
     # custom package hook option: use hugo figure shortcode
     knitr_options$opts_chunk$use_shortcode <- TRUE
+    # other chunk-option defaults
+    knitr_options$opts_chunk$tidy <- FALSE
+    knitr_options$opts_chunk$error <- FALSE
+    knitr_options$opts_chunk$warning <- FALSE
+    knitr_options$opts_chunk$message <- FALSE
+    knitr_options$opts_chunk$prompt <- FALSE
+    knitr_options$opts_chunk$autodep <- TRUE
+    knitr_options$opts_chunk$cache <- TRUE
 
-    # by default, output figures directly to figure
+    # output figures directly to "figure" (as template Makefile expects)
     knitr_options$opts_chunk$fig.path <- "figure/"
+
+    # code output width
+    if (is.null(knitr_options$opts_knit)) {
+        knitr_options$opts_knit <- list()
+    }
+    knitr_options$opts_knit$width <- 44
 
     rmarkdown::output_format(
         knitr=knitr_options,
