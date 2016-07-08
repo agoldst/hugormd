@@ -8,7 +8,7 @@ target := $(basename $(Rmd))
 ## Optional configuration ##
 
 md := $(target).md
-hugo_root := /Users/agoldst/www/andrewgoldstone.com
+hugo_root := $(HOME)/www/andrewgoldstone.com
 post_target := $(hugo_root)/content/post/$(md)
 
 # the files_source directory is copied UNDER files_target:
