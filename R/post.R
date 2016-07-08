@@ -1,9 +1,25 @@
 #' A Hugo markdown format
 #'
 #' An output format suitable for subsequent processing by hugo's Blackfriday.
+#' Unlike the default markdown format, YAML is always preserved, no TOC is ever
+#' generated, and text is not wrapped. A plot hook is set to output figures as
+#' a \code{{{< figure >}}} shortcode unless chunk option \code{use_shortcode}
+#' is FALSE.
 #'
-#' Unlike the default markdown format, YAML is always preserved and no TOC is
-#' ever generated.
+#' Other default knitting options set here:
+#' \code{tidy,error,warning,message,prompt} are all FALSE; \code{autodep,cache}
+#' are TRUE; the figure output path is set to \code{figure/}; output width is
+#' set to 44; and the global option \code{knitr.table.format} is temporarily
+#' set to \code{html} so that \code{\link[knitr]{kable}} will output tables in
+#' HTML (it cannot output blackfriday-compatible markdown tables). These
+#' settings can be overridden in the usual ways.
+#'
+#' @param fig_width,fig_height,fig_retina,dev as in
+#' \code{\link[rmarkdown]{html_document}}
+#' @param highlight_shortcode If TRUE (default), fenced code blocks become
+#' \code{{{< highlight >}}} blocks
+#' @param includes,md_extensions,pandoc_args as in
+#' \code{\link[rmarkdown]{md_document}}
 #'
 #' @export
 post <- function (
@@ -45,6 +61,13 @@ post <- function (
     }
     knitr_options$opts_knit$width <- 44
 
+    # configure `kable` to default to html output
+    ktformat <- getOption("knitr.table.format")
+
+    if (is.null(ktformat)) {
+        options(knitr.table.format="html")
+    }
+
     rmarkdown::output_format(
         knitr=knitr_options,
         pandoc=rmarkdown::pandoc_options(
@@ -53,13 +76,16 @@ post <- function (
             args=args
         ),
         clean_supporting=FALSE,
-        post_processor=post_process(highlight_shortcode)
+        post_processor=post_process(highlight_shortcode, ktformat)
     )
 }
 
-post_process <- function (highlight_shortcode) {
+post_process <- function (highlight_shortcode, ktformat) {
     function (metadata, input_file,
                           output_file, clean, verbose) {
+        # reset option we fiddled
+        options(knitr.table.format=ktformat)
+
         # yaml preservation (NOT via `pandoc --standalone`)
         # but copied from rmarkdown::md_document
         input_lines <- readLines(input_file, warn=FALSE)

@@ -5,13 +5,33 @@
 \title{A Hugo markdown format}
 \usage{
 post(fig_width = 7, fig_height = 5, fig_retina = NULL, dev = "png",
-  includes = NULL, md_extensions = NULL, pandoc_args = NULL)
+  highlight_shortcode = TRUE, includes = NULL, md_extensions = NULL,
+  pandoc_args = NULL)
+}
+\arguments{
+\item{fig_width, fig_height, fig_retina, dev}{as in
+\code{\link[rmarkdown]{html_document}}}
+
+\item{highlight_shortcode}{If TRUE (default), fenced code blocks become
+\code{{{< highlight >}}} blocks}
+
+\item{includes, md_extensions, pandoc_args}{as in
+\code{\link[rmarkdown]{md_document}}}
 }
 \description{
 An output format suitable for subsequent processing by hugo's Blackfriday.
+Unlike the default markdown format, YAML is always preserved, no TOC is ever
+generated, and text is not wrapped. A plot hook is set to output figures as
+a \code{{{< figure >}}} shortcode unless chunk option \code{use_shortcode}
+is FALSE.
 }
 \details{
-Unlike the default markdown format, YAML is always preserved and no TOC is
-ever generated.
+Other default knitting options set here:
+\code{tidy,error,warning,message,prompt} are all FALSE; \code{autodep,cache}
+are TRUE; the figure output path is set to \code{figure/}; output width is
+set to 44; and the global option \code{knitr.table.format} is temporarily
+set to \code{html} so that \code{\link[knitr]{kable}} will output tables in
+HTML (it cannot output blackfriday-compatible markdown tables). These
+settings can be overridden in the usual ways.
 }
 

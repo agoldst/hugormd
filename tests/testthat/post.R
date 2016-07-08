@@ -23,7 +23,7 @@ output: hugormd::post
 ",
     rmd)
 
-    rmarkdown::render(rmd)
+    rmarkdown::render(rmd, quiet=T)
     expect_true(file.exists(md))
     expect_equal(readLines(md), strlines(
 "---
@@ -43,7 +43,8 @@ output: hugormd::post
         )
     )
 
-    rmarkdown::render(rmd, output_format=hugormd::post(highlight_shortcode=F))
+    rmarkdown::render(rmd, output_format=hugormd::post(highlight_shortcode=F),
+                      quiet=T)
     expect_equal(readLines(md), strlines(
 "---
 output: hugormd::post
@@ -81,7 +82,7 @@ plot(1:10, 1:10)
 ",
     rmd)
 
-    rmarkdown::render(rmd)
+    rmarkdown::render(rmd, quiet=T)
     expect_true(file.exists(md))
     expect_equal(readLines(md),
         strlines(
@@ -95,6 +96,27 @@ output: hugormd::post
 "
         )
     )
+})
+
+test_that("kable defaults to html", {
+    ll <- strlines(
+"---
+output: hugormd::post
+---
+
+```{r, echo=F}
+knitr::kable(mtcars[1:3, 1:3])
+```
+"
+)
+    writeLines(ll, rmd)
+    rmarkdown::render(rmd, quiet=T)
+    ll[6] <- "knitr::kable(mtcars[1:3, 1:3], format=\"html\")"
+    rmd2 <- file.path(d, "post2.Rmd")
+    writeLines(ll, rmd2)
+    rmarkdown::render(rmd2, quiet=T)
+
+    expect_equal(readLines(md), readLines(file.path(d, "post2.md")))
 })
 
 # cleanup
