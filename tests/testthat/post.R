@@ -5,6 +5,8 @@ dir.create(d)
 rmd <- file.path(d, "post.Rmd")
 md <- file.path(d, "post.md")
 
+strlines <- function (x) strsplit(x, "\n", fixed=T)[[1]]
+
 test_that("Code blocks are output as {{< highlight >}} blocks", {
     writeLines(
 "---
@@ -19,8 +21,7 @@ output: hugormd::post
 
     rmarkdown::render(rmd)
     expect_true(file.exists(md))
-    expect_equal(readLines(md),
-        strsplit(
+    expect_equal(readLines(md), strlines(
 "---
 output: hugormd::post
 ---
@@ -30,8 +31,40 @@ output: hugormd::post
 {{< /highlight >}}
 
     ## [1] 4
+"
+        )
+    )
+})
+
+test_that("Figures are output as {{< figure >}} blocks", {
+    writeLines(
+"---
+output: hugormd::post
+---
+
+```{r plot, echo=F}
+plot(1:10, 1:10)
+```
+
+```{r cap, fig.cap=\"Caption\", echo=F}
+plot(1:10, 1:10)
+```
 ",
-        "\n", fixed=T)[[1]]
+    rmd)
+
+    rmarkdown::render(rmd)
+    expect_true(file.exists(md))
+    expect_equal(readLines(md),
+        strlines(
+"---
+output: hugormd::post
+---
+
+{{< figure src=\"figure/plot-1.png\" >}}
+
+{{< figure src=\"figure/cap-1.png\" caption=\"Caption\" >}}
+"
+        )
     )
 })
 
