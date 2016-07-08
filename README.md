@@ -2,6 +2,9 @@ The [Hugo](http://gohugo.io/) static site generator uses its own markdown proces
 
 Plots are placed in a `{{< figure >}}` shortcode block, with a possible `caption` parameter (and the source file set appropriately).
 
-R source from code chunks is placed in a `{{< highlight r >}}` block. To process these successfully, hugo to be able to find an installation of [pygments](http://pygments.org) (`pip install pygments`).
+R source from code chunks is placed in a `{{< highlight r >}}` block. To process these successfully, hugo has to be able to find an installation of [pygments](http://pygments.org) (`pip install pygments`). See the Hugo documentation on [syntax highlighting](https://gohugo.io/extras/highlighting/). I have had better luck with this approach than with the javascript-based alternative.
 
-This is a work in progress, which I tweak when I hit some new eccentricity of Hugo. Use, copy, or modify at your own risk.
+Also included is an rmarkdown template for a post with an included Makefile for copying the generated markdown and accompanying figures into your Hugo site sources. This is a messy problem, because figures have to go in the `static` part of the Hugo hierarchy whereas posts go in `content`, but in the generated site the `figure` subdirectory has to end up under the same directory as the post's HTML. What I have works for me (sometimes?) but will need adjusting on any other system.
+
+This is a work in progress, which I tweak whenever I discover some further eccentricity in Hugo or rmarkdown or pandoc. Use, copy, or modify at your own risk.
+
