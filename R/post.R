@@ -56,8 +56,10 @@ post_process <- function (metadata, input_file,
     output_body <- gsub("\\{\\{&lt; ", "{{< ", output_body)
     output_body <- gsub(" &gt;}}", " >}}", output_body)
 
-    # replace ```r with {{< highlight r >}}
-    output_body <- gsub("^``` \\{\\.r\\}", "{{< highlight r >}}", output_body)
+    # pandoc translates ```r to ``` {.r}; replace with {{< highlight r >}}
+    output_body <- gsub("^``` \\{\\.(\\w+)\\}", "{{< highlight \\1 >}}",
+                        output_body)
+    # I think ``` on its own is always the terminator of a highlight block
     output_body <- gsub("^```$", "{{< /highlight >}}", output_body)
 
     if (!is.null(partitioned$front_matter)) {
