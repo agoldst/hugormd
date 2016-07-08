@@ -16,6 +16,10 @@ output: hugormd::post
 ```{r}
 2 + 2
 ```
+
+```html
+<h2>cool</h2>
+```
 ",
     rmd)
 
@@ -31,6 +35,10 @@ output: hugormd::post
 {{< /highlight >}}
 
     ## [1] 4
+
+{{< highlight html >}}
+<h2>cool</h2>
+{{< /highlight >}}
 "
         )
     )
