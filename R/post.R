@@ -9,6 +9,7 @@
 post <- function (
         fig_width=7, fig_height=5,
         fig_retina=NULL, dev="png",
+        highlight_shortcode=TRUE,
         includes=NULL, md_extensions=NULL,
         pandoc_args=NULL) {
 
@@ -52,36 +53,41 @@ post <- function (
             args=args
         ),
         clean_supporting=FALSE,
-        post_processor=post_process
+        post_processor=post_process(highlight_shortcode)
     )
 }
 
-post_process <- function (metadata, input_file,
+post_process <- function (highlight_shortcode) {
+    function (metadata, input_file,
                           output_file, clean, verbose) {
-    # yaml preservation (NOT via `pandoc --standalone`)
-    # but copied from rmarkdown::md_document
-    input_lines <- readLines(input_file, warn=FALSE)
-    partitioned <- rmarkdown:::partition_yaml_front_matter(input_lines)
-    output_body <- readLines(output_file, warn=FALSE)
+        # yaml preservation (NOT via `pandoc --standalone`)
+        # but copied from rmarkdown::md_document
+        input_lines <- readLines(input_file, warn=FALSE)
+        partitioned <- rmarkdown:::partition_yaml_front_matter(input_lines)
+        output_body <- readLines(output_file, warn=FALSE)
 
-    # de-sanitize shortcode delimiters
-    output_body <- gsub("\\{\\{&lt; ", "{{< ", output_body)
-    output_body <- gsub(" &gt;}}", " >}}", output_body)
+        # de-sanitize shortcode delimiters
+        output_body <- gsub("\\{\\{&lt; ", "{{< ", output_body)
+        output_body <- gsub(" &gt;}}", " >}}", output_body)
 
-    # pandoc translates ```r to ``` {.r}; replace with {{< highlight r >}}
-    output_body <- gsub("^``` \\{\\.(\\w+)\\}", "{{< highlight \\1 >}}",
-                        output_body)
-    # I think ``` on its own is always the terminator of a highlight block
-    output_body <- gsub("^```$", "{{< /highlight >}}", output_body)
+        if (highlight_shortcode) {
+            # pandoc translates ```r to ``` {.r}; replace with
+            # {{< highlight r >}}
+            output_body <- gsub("^``` \\{\\.(\\w+)\\}",
+                "{{< highlight \\1 >}}", output_body)
+            # ``` on its own is always(?) the terminator of a highlight block
+            output_body <- gsub("^```$", "{{< /highlight >}}", output_body)
+        }
 
-    if (!is.null(partitioned$front_matter)) {
-        output_lines <- c(
-            partitioned$front_matter, "",
-            output_body
-        )
-        writeLines(output_lines, output_file, useBytes=TRUE)
+        if (!is.null(partitioned$front_matter)) {
+            output_lines <- c(
+                partitioned$front_matter, "",
+                output_body
+            )
+            writeLines(output_lines, output_file, useBytes=TRUE)
+        }
+        output_file
     }
-    output_file
 }
 
 plot_hook <- function (x, options) {

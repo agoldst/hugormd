@@ -42,7 +42,28 @@ output: hugormd::post
 "
         )
     )
+
+    rmarkdown::render(rmd, output_format=hugormd::post(highlight_shortcode=F))
+    expect_equal(readLines(md), strlines(
+"---
+output: hugormd::post
+---
+
+``` {.r}
+2 + 2
+```
+
+    ## [1] 4
+
+``` {.html}
+<h2>cool</h2>
+```
+"
+        )
+    )
+
 })
+
 
 test_that("Figures are output as {{< figure >}} blocks", {
     writeLines(
