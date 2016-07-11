@@ -5,15 +5,22 @@
 \title{A Hugo markdown format}
 \usage{
 post(fig_width = 7, fig_height = 5, fig_retina = NULL, dev = "png",
-  highlight_shortcode = TRUE, includes = NULL, md_extensions = NULL,
+  fig_path = "figure", highlight_shortcode = TRUE,
+  transparent_plots = FALSE, includes = NULL, md_extensions = NULL,
   pandoc_args = NULL)
 }
 \arguments{
 \item{fig_width, fig_height, fig_retina, dev}{as in
 \code{\link[rmarkdown]{html_document}}}
 
+\item{fig_path}{global setting for \code{fig.path} chunk option (a final
+\code{/} is automatically added if absent)}
+
 \item{highlight_shortcode}{If TRUE (default), fenced code blocks become
 \code{{{< highlight >}}} blocks}
+
+\item{transparent_plots}{If TRUE, set background of base and ggplot2 plots 
+to transparent. FALSE by default.}
 
 \item{includes, md_extensions, pandoc_args}{as in
 \code{\link[rmarkdown]{md_document}}}

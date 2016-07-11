@@ -16,8 +16,12 @@
 #'
 #' @param fig_width,fig_height,fig_retina,dev as in
 #' \code{\link[rmarkdown]{html_document}}
+#' @param fig_path global setting for \code{fig.path} chunk option (a final
+#' \code{/} is automatically added if absent)
 #' @param highlight_shortcode If TRUE (default), fenced code blocks become
 #' \code{{{< highlight >}}} blocks
+#' @param transparent_plots If TRUE, set background of base and ggplot2 plots 
+#' to transparent. FALSE by default.
 #' @param includes,md_extensions,pandoc_args as in
 #' \code{\link[rmarkdown]{md_document}}
 #'
@@ -25,7 +29,9 @@
 post <- function (
         fig_width=7, fig_height=5,
         fig_retina=NULL, dev="png",
+        fig_path="figure",
         highlight_shortcode=TRUE,
+        transparent_plots=FALSE,
         includes=NULL, md_extensions=NULL,
         pandoc_args=NULL) {
 
@@ -40,6 +46,8 @@ post <- function (
     }
     # set plot hook
     knitr_options$knit_hooks$plot <- plot_hook
+    # set transparent theme hook
+    knitr_options$knit_hooks$transparent <- set_transparent_theme
 
     # custom package hook option: use hugo figure shortcode
     knitr_options$opts_chunk$use_shortcode <- TRUE
@@ -52,8 +60,12 @@ post <- function (
     knitr_options$opts_chunk$autodep <- TRUE
     knitr_options$opts_chunk$cache <- TRUE
 
-    # output figures directly to "figure" (as template Makefile expects)
-    knitr_options$opts_chunk$fig.path <- "figure/"
+    if (transparent_plots) {
+        knitr_options$opts_chunk$transparent <- TRUE
+    }
+
+    # set figure path: ensure terminal /
+    knitr_options$opts_chunk$fig.path <- sub("([^/])$", "\\1/", fig_path)
 
     # code output width
     if (is.null(knitr_options$opts_knit)) {
