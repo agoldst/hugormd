@@ -62,6 +62,7 @@ post <- function (
 
     if (transparent_plots) {
         knitr_options$opts_chunk$transparent <- TRUE
+        knitr_options$opts_chunk$dev.args <- list(bg="transparent")
     }
 
     # set figure path: ensure terminal /
