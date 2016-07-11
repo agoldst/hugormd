@@ -1,4 +1,4 @@
-
+context("output format")
 
 d <- tempfile()
 dir.create(d)
