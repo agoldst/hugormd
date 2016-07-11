@@ -1,7 +1,9 @@
 ---
 title: A Post
 date: "`r Sys.Date()`"
-output: hugormd::post
+output:
+    hugormd::post:
+        transparent_plots: true
 ---
 
 ```{r setup, include=F, cache=F}

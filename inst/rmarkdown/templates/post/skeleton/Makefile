@@ -17,15 +17,19 @@ post_files_target := $(hugo_root)/static/blog/$(target)
 
 ## Knitting ##
 
-markdown:
+markdown: $(md)
+
+$(md): $(Rmd)
 	R -e 'rmarkdown::render("$(Rmd)", output_file="$(md)")'
 
 ## Deployment ##
 
 deploy: markdown
 	cp -f $(md) $(post_target)
-	mkdir -p $(post_files_target)
-	cp -f -R $(post_files_source) $(post_files_target)
+	if [[ -d $(post_files_source) ]] ; then \
+	    mkdir -p $(post_files_target) ; \
+	    cp -f -R $(post_files_source) $(post_files_target) ; \
+	fi
 
 clean:
 	rm -f $(md)
