@@ -36,7 +36,10 @@ post <- function (
         pandoc_args=NULL) {
 
     args <- c(rmarkdown::includes_to_pandoc_args(includes),
-              "--no-wrap",
+              if (rmarkdown::pandoc_available("1.16"))
+                  "--wrap=none"
+              else
+                  "--no-wrap",
               pandoc_args)
 
     knitr_options <- rmarkdown::knitr_options_html(fig_width, fig_height,
