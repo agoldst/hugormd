@@ -3,7 +3,6 @@
 \docType{package}
 \name{hugormd}
 \alias{hugormd}
-\alias{hugormd-package}
 \title{R Markdown and Hugo: Stuff}
 \description{
 An R Markdown output format (\code{hugormd::post}) and template (also called
@@ -21,4 +20,3 @@ system2("make", c("-C", "newpost", "hugo_root=~/myhugosite", "deploy"))
 }
 
 }
-

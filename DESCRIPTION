@@ -9,5 +9,6 @@ Depends:
     rmarkdown
 License: GPL3
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 7.1.1
 Suggests: testthat
+Encoding: UTF-8

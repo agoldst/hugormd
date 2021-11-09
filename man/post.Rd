@@ -4,10 +4,18 @@
 \alias{post}
 \title{A Hugo markdown format}
 \usage{
-post(fig_width = 7, fig_height = 5, fig_retina = NULL, dev = "png",
-  fig_path = "figure", highlight_shortcode = TRUE,
-  transparent_plots = FALSE, includes = NULL, md_extensions = NULL,
-  pandoc_args = NULL)
+post(
+  fig_width = 7,
+  fig_height = 5,
+  fig_retina = NULL,
+  dev = "png",
+  fig_path = "figure",
+  highlight_shortcode = TRUE,
+  transparent_plots = FALSE,
+  includes = NULL,
+  md_extensions = NULL,
+  pandoc_args = NULL
+)
 }
 \arguments{
 \item{fig_width, fig_height, fig_retina, dev}{as in
@@ -41,4 +49,3 @@ set to \code{html} so that \code{\link[knitr]{kable}} will output tables in
 HTML (it cannot output blackfriday-compatible markdown tables). These
 settings can be overridden in the usual ways.
 }
-
